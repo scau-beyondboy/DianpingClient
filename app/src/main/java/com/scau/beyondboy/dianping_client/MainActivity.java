@@ -1,20 +1,63 @@
 package com.scau.beyondboy.dianping_client;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import com.scau.beyondboy.dianping_client.fragment.FragmentHome;
+import com.scau.beyondboy.dianping_client.fragment.FragmentMy;
+import com.scau.beyondboy.dianping_client.fragment.FragmentSearch;
+import com.scau.beyondboy.dianping_client.fragment.FragmentTuan;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
 {
-
+    @Bind(R.id.main_bottom_tabs)
+    RadioGroup mBottomTabsGroup;
+    @Bind(R.id.main_home)
+    RadioButton mHomeButton;
+    private FragmentManager mFragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        //默认选中
+        mHomeButton.setChecked(true);
+        mFragmentManager=getSupportFragmentManager();
+        changeFragment(new FragmentHome(),false);
+        mBottomTabsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                switch (checkedId)
+                {
+                    case R.id.main_home:
+                        changeFragment(new FragmentHome(),true);
+                        break;
+                    case R.id.main_search:
+                        changeFragment(new FragmentSearch(),true);
+                        break;
+                    case R.id.main_my:
+                        changeFragment(new FragmentMy(),true);
+                        break;
+                    case R.id.main_tuan:
+                        changeFragment(new FragmentTuan(),true);
+                        break;
+                }
+            }
+        });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -38,5 +81,17 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    //切换不同的fragment
+    private void changeFragment(Fragment fragment,boolean isAddToStack)
+    {
+        //开启事务
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.main_content, fragment);
+        if (!isAddToStack)
+        {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 }
