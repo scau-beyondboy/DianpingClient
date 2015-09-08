@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Dianping_Client</string>
-
+    <!--首页-->
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="welcome_guide_btn">点击立即进入</string>
@@ -8,4 +8,10 @@
     <string name="main_tuan">团购</string>
     <string name="main_search">索搜</string>
     <string name="index_top_city">选择城市</string>
+    <!-- 城市 -->
+    <string name="city_name">所在城市</string>
+    <string name="city_country">国内城市</string>
+    <string name="city_default">北京</string>
+    <string name="city_location">定位城市</string>
+    <string name="city_search">正在定位中&#8230;</string>
 </resources>

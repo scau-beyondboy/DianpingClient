@@ -52,8 +52,9 @@ public class WelcomeStartAct extends AppCompatActivity
                     startActivity(new Intent(WelcomeStartAct.this, WelcomeGuideAct.class));
                     ShareUtils.putWelcomeEnterFlag(WelcomeStartAct.this,true);
                 }
-                //跳转到主页面
-                startActivity(new Intent(WelcomeStartAct.this,MainActivity.class));
+               else
+                   //跳转到主页面
+                    startActivity(new Intent(WelcomeStartAct.this,MainActivity.class));
                 finish();
             }
         });

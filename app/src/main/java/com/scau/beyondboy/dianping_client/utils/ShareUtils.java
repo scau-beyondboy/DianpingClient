@@ -13,6 +13,7 @@ public class ShareUtils
 
     public static final String FILE_NAME = "dianping";
     public static final String WELCOME_ENTER_FLAG = "welcomeEnterFlag";
+    public static final String CITY_NAME = "cityName";
 
     public static boolean getWelcomeEnterFlag(Context context)
     {
@@ -21,5 +22,15 @@ public class ShareUtils
     public static  void putWelcomeEnterFlag(Context context,boolean value)
     {
         context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putBoolean(WELCOME_ENTER_FLAG,value).apply();
+    }
+
+    public static void putCityName(Context context, String cityName)
+    {
+        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(CITY_NAME, cityName).apply();
+    }
+
+    public static String getCityName(Context context)
+    {
+        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(CITY_NAME, "选择城市");
     }
 }
