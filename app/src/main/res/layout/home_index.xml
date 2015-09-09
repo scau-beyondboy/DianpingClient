@@ -31,4 +31,13 @@
       android:layout_height="@dimen/imagesize_30dp"
       />
   </RelativeLayout>
+  <GridView
+    android:id="@+id/home_nav_sort"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:numColumns="3"
+    android:scrollbars="none"
+    android:padding="@dimen/padding_5dp"
+    android:background="@color/white"/>
 </LinearLayout>

@@ -28,6 +28,8 @@
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
       <activity android:name=".CityActivity"
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+      <activity android:name=".AllCategoryActivity"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

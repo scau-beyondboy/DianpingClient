@@ -51,6 +51,12 @@
 	        android:scrollbars="none"
 	        android:layout_marginRight="@dimen/margin_8dp">
 	    </ListView>
+        <com.scau.beyondboy.dianping_client.view.SiderBar
+          android:id="@+id/city_side_bar"
+          android:layout_alignParentRight="true"
+          android:layout_width="@dimen/layout_width_45dp"
+          android:layout_height="match_parent"
+          />
 
     </RelativeLayout>
 

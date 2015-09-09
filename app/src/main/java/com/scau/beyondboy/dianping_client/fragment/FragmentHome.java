@@ -17,10 +17,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.scau.beyondboy.dianping_client.AllCategoryActivity;
 import com.scau.beyondboy.dianping_client.CityActivity;
 import com.scau.beyondboy.dianping_client.Consts.Consts;
+import com.scau.beyondboy.dianping_client.Consts.ResourcesConsts;
 import com.scau.beyondboy.dianping_client.R;
 import com.scau.beyondboy.dianping_client.utils.ShareUtils;
 
@@ -42,6 +47,8 @@ public class FragmentHome extends Fragment implements LocationListener
     private static final String TAG = FragmentHome.class.getName();
     @Bind(R.id.index_top_city)
     TextView mTopCity;
+    @Bind(R.id.home_nav_sort)
+    GridView mCategroy;
     private LocationManager mLocationManager;
     private String cityName;
 
@@ -52,6 +59,7 @@ public class FragmentHome extends Fragment implements LocationListener
         View view = inflater.inflate(R.layout.home_index, container, false);
         ButterKnife.bind(this, view);
         mTopCity.setText(ShareUtils.getCityName(getActivity()));
+        mCategroy.setAdapter(new CategrayAdapter());
         return view;
     }
 
@@ -186,5 +194,53 @@ public class FragmentHome extends Fragment implements LocationListener
     {
         super.onDestroy();
         ShareUtils.putCityName(getActivity(),cityName);
+    }
+    private class CategrayAdapter extends ArrayAdapter<String>
+    {
+        public CategrayAdapter()
+        {
+            super(getActivity(),0, ResourcesConsts.navsSort);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            Holder holder;
+            if(convertView==null)
+            {
+                convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.home_index_nav_item,parent,false);
+                holder=new Holder(convertView);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder=(Holder)convertView.getTag();
+            }
+            holder.textView.setText(ResourcesConsts.navsSort[position]);
+            holder.imageView.setImageResource(ResourcesConsts.navsSortImages[position]);
+            if(position==ResourcesConsts.navsSort.length-1)
+            {
+               holder.imageView.setOnClickListener(new View.OnClickListener()
+               {
+                   @Override
+                   public void onClick(View v)
+                   {
+                       startActivity(new Intent(getActivity(),AllCategoryActivity.class));
+                   }
+               });
+            }
+            return convertView;
+        }
+    }
+    class Holder
+    {
+        @Bind(R.id.home_nav_item_desc)
+        TextView textView;
+        @Bind(R.id.home_nav_item_image)
+        ImageView imageView;
+        public Holder(View view)
+        {
+            ButterKnife.bind(this,view);
+        }
     }
 }

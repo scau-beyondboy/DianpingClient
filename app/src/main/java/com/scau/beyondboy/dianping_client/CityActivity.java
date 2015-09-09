@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.dianping_client.Consts.Consts;
 import com.scau.beyondboy.dianping_client.model.CityEntity;
 import com.scau.beyondboy.dianping_client.utils.HttpNetWorkUtils;
+import com.scau.beyondboy.dianping_client.view.SiderBar;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -40,13 +42,16 @@ import butterknife.OnItemClick;
  * Time: 19:33
  * 显示城市列表数据
  */
-public class CityActivity extends AppCompatActivity
+public class CityActivity extends AppCompatActivity implements SiderBar.OnTouchingLetterChangedListener
 {
     private static final String TAG = CityActivity.class.getName();
     private CityDataCallback mCityDataCallback=new CityDataCallback();
     private static Handler mHandler;
+    private List<CityEntity> mCityData;
     @Bind(R.id.city_list)
     ListView mListData;
+    @Bind(R.id.city_side_bar)
+    SiderBar mLetterSideBar;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -56,6 +61,7 @@ public class CityActivity extends AppCompatActivity
         mHandler=new MyHandler(this,mListData);
         View headView= LayoutInflater.from(this).inflate(R.layout.home_city_search,null);
         mListData.addHeaderView(headView);
+        mLetterSideBar.setOnTouchingLetterChangedListener(this);
         //拉去网络数据后，在ListView显示
         try
         {
@@ -91,6 +97,29 @@ public class CityActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
         }
+    }
+
+    @Override
+    public void onTouchingLetterChanged(String s)
+    {
+        //ListView对应字母的显示位置
+        int position=findLetterIndex(s,mCityData);
+        if(position!=-1)
+            mListData.setSelection(position);
+    }
+    private int findLetterIndex(String s, List<CityEntity> lisCityData)
+    {
+        if(lisCityData!=null)
+            for (int i = 0; i < lisCityData.size(); i++)
+            {
+                if(lisCityData.get(i).getCitySortkey().equals(s))
+                    return i;
+            }
+        else
+        {
+            Toast.makeText(this, "暂无信息", Toast.LENGTH_SHORT).show();
+        }
+        return -1;
     }
     private class CityAdapter extends ArrayAdapter<CityEntity>
     {
@@ -176,9 +205,11 @@ public class CityActivity extends AppCompatActivity
         private List<CityEntity> parseCityDataJson(String cityDataJson)
         {
             Gson gson=new Gson();
-            return gson.fromJson(cityDataJson,new TypeToken<List<CityEntity>>(){}.getType());
+            mCityData=gson.fromJson(cityDataJson,new TypeToken<List<CityEntity>>(){}.getType());
+            return mCityData;
         }
     }
+    /**定义静态Handler对象防止内存泄露*/
     private static class MyHandler extends Handler
     {
         private final WeakReference<CityActivity> mActivityWeakReference;
