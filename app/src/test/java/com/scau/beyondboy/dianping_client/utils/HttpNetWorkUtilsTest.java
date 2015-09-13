@@ -19,6 +19,6 @@ public class HttpNetWorkUtilsTest
     @Test
     public void testGet() throws Exception
     {
-        System.out.println(HttpNetWorkUtils.get(Consts.HOST+Consts.CITY_DATA));
+        System.out.println(HttpNetWorkUtils.getResponseString(Consts.HOST + Consts.CITY_DATA));
     }
 }

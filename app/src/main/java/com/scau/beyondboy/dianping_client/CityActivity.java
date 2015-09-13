@@ -65,7 +65,7 @@ public class CityActivity extends AppCompatActivity implements SiderBar.OnTouchi
         //拉去网络数据后，在ListView显示
         try
         {
-            HttpNetWorkUtils.get(Consts.HOST+Consts.CITY_DATA,mCityDataCallback);
+            HttpNetWorkUtils.Asyget(Consts.HOST + Consts.CITY_DATA, mCityDataCallback);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class CityActivity extends AppCompatActivity implements SiderBar.OnTouchi
             case R.id.index_city_flushcity:
                 try
                 {
-                    HttpNetWorkUtils.get(Consts.HOST+Consts.CITY_DATA,mCityDataCallback);
+                    HttpNetWorkUtils.Asyget(Consts.HOST + Consts.CITY_DATA, mCityDataCallback);
                 } catch (IOException e)
                 {
                     e.printStackTrace();

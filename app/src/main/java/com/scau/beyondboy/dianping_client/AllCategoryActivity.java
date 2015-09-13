@@ -59,7 +59,7 @@ public class AllCategoryActivity extends AppCompatActivity
         //拉去网络数据后，在ListView显示
         try
         {
-            HttpNetWorkUtils.get(Consts.HOST + Consts.CATEGORY_DATA,mCategoryDataCallback);
+            HttpNetWorkUtils.Asyget(Consts.HOST + Consts.CATEGORY_DATA, mCategoryDataCallback);
         } catch (IOException e)
         {
             e.printStackTrace();

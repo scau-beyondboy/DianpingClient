@@ -13,4 +13,5 @@ public class Consts
     public static final String CITY_DATA = "/city";
     public static final int REQUESTCITYCODE = 1;
     public static final String CATEGORY_DATA = "/category";
+    public static final String PRODUCT_DATA = "/product/list";
 }

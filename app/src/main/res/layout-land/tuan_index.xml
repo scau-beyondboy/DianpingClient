@@ -16,7 +16,7 @@
       android:layout_height="match_parent"
       android:text="团购"
       android:textColor="@color/white"
-      android:textSize="@dimen/textsize_20sp"
+      android:textSize="@dimen/textsize_25sp"
       android:gravity="center_horizontal"
       android:padding="10dp"/>
 
