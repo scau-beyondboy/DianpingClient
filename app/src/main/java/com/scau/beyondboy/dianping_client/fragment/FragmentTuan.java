@@ -1,8 +1,8 @@
 package com.scau.beyondboy.dianping_client.fragment;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,17 +20,16 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.scau.beyondboy.dianping_client.Consts.Consts;
+import com.scau.beyondboy.dianping_client.GoodsDetailActivity;
 import com.scau.beyondboy.dianping_client.R;
 import com.scau.beyondboy.dianping_client.model.ProductEntity;
 import com.scau.beyondboy.dianping_client.utils.HttpNetWorkUtils;
 import com.scau.beyondboy.dianping_client.utils.LoadImageUtils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import butterknife.Bind;
@@ -45,27 +45,55 @@ public class FragmentTuan extends Fragment
 {
     private static final String TAG = FragmentTuan.class.getName();
     @Bind(R.id.index_listGoods)
-    ListView goodsListView;
+    PullToRefreshListView goodsListView;
     private static List<ProductEntity> sProductEntityList;
-    private final int page=1,size=5;
-    private MyHandler mHandler;
-    private ProductDataCallback mProductDataCallback=new ProductDataCallback();
+    /**记录是否第一次加载数据*/
+    private boolean mFirstLoadData=false;
+    private ProductAdapter mProductAdapter;
+    private  int page=1;
+    private final int size=5;
+    /**记录信息条目数量*/
+    private int count=0;
+    /**标记上下滑动距离*/
+    private int mScrollY=0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view=inflater.inflate(R.layout.tuan_index, container, false);
         ButterKnife.bind(this,view);
-        mHandler=new MyHandler(this,goodsListView);
-        try
+        goodsListView.setMode(PullToRefreshBase.Mode.BOTH);//支持上拉也支持下拉
+        goodsListView.setScrollingWhileRefreshingEnabled(true);//滚动的时候不加载数据
+        goodsListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
         {
-            HttpNetWorkUtils.AsygetWithparam(Consts.HOST + Consts.PRODUCT_DATA, "page=" + page + "&size=" + size, mProductDataCallback);
-        } catch (IOException e)
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> pullToRefreshBase)
+            {
+                mScrollY = goodsListView.getScrollY();
+                Log.i(TAG, "移动距离：  " + mScrollY);
+                if (mScrollY > 0)
+                    page++;
+                else
+                    page = 1;
+                new AsyProductDataTask().execute();
+            }
+        });
+        new AsyProductDataTask().execute();
+        //当商品列表点击的时候显示详情
+        goodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
-            e.printStackTrace();
-        }
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Log.i(TAG, "点击位置： " + position);
+                Intent intent = new Intent(getActivity(), GoodsDetailActivity.class);
+                intent.putExtra("goods", sProductEntityList.get(position-1));
+                startActivity(intent);
+            }
+        });
         return view;
     }
+
     private class ProductAdapter extends ArrayAdapter<ProductEntity>
     {
         public ProductAdapter()
@@ -103,28 +131,6 @@ public class FragmentTuan extends Fragment
             return convertView;
         }
     }
-    /**定义Handler对象防止内存泄露*/
-    private  class MyHandler extends Handler
-    {
-        private final WeakReference<FragmentTuan> mFragmentWeakReference;
-        private ListView goodsListView;
-        public MyHandler(FragmentTuan fragmentTuan,ListView goodsListView)
-        {
-            mFragmentWeakReference =new WeakReference<>(fragmentTuan);
-            this.goodsListView=goodsListView;
-        }
-        @Override
-        public void handleMessage(Message msg)
-        {
-            FragmentTuan fragmentTuan = mFragmentWeakReference.get();
-            if(fragmentTuan!=null)
-                if(msg.what==0x123)
-                {
-                    sProductEntityList =(List<ProductEntity>)msg.obj;
-                    goodsListView.setAdapter(new ProductAdapter());
-                }
-        }
-    }
     class Holder
     {
         @Bind(R.id.index_gl_item_image)
@@ -140,31 +146,58 @@ public class FragmentTuan extends Fragment
         @Bind(R.id.index_gl_item_count)
         public TextView count;
     }
-    /**
-     * 网络拉取回调接口
-     */
-    private class ProductDataCallback implements Callback
+
+    private class AsyProductDataTask extends AsyncTask<Void,Void,String>
     {
-
         @Override
-        public void onFailure(Request request, IOException e)
+        protected String doInBackground(Void... params)
         {
-            Log.e(TAG, "拉取数据失败", e);
-        }
-
-        @Override
-        public void onResponse(Response response) throws IOException
-        {
-            if(response.isSuccessful())
+            String prouductDataJson;
+            try
             {
-                mHandler.obtainMessage(0x123, parseProductDataJson(response.body().string())).sendToTarget();
+                prouductDataJson=HttpNetWorkUtils.geResponseStringtWithparam(Consts.HOST + Consts.PRODUCT_DATA, "page=" + page + "&size=" + size);
+                if(!mFirstLoadData)
+                {
+                    count=Integer.valueOf(HttpNetWorkUtils.getResponseString(Consts.HOST + Consts.PRODUCT_TOTAL));
+                    mFirstLoadData=true;
+                }
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+                return null;
             }
+            return prouductDataJson;
         }
-        private List<ProductEntity> parseProductDataJson(String categoryDataJson)
+        @Override
+        protected void onPostExecute(String s)
         {
-            Gson gson=new Gson();
-            sProductEntityList=gson.fromJson(categoryDataJson,new TypeToken<List<ProductEntity>>(){}.getType());
-            return sProductEntityList;
+            if(s!=null)
+            {
+                if(mScrollY<=0)
+                {
+                    sProductEntityList=parseProductDataJson(s);
+                    mProductAdapter =new ProductAdapter();
+                    goodsListView.setAdapter(mProductAdapter);
+                }
+                else
+                {
+                    Log.i(TAG,"数量统计："+count);
+                    sProductEntityList.addAll(parseProductDataJson(s));
+                    mProductAdapter.notifyDataSetChanged();
+                }
+                Log.i(TAG,"刚好更新");
+            }
+            goodsListView.onRefreshComplete();
+            //数据加载完全部
+            if(page*size==count)
+                goodsListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);//只能上拉刷新
+            else
+                goodsListView.setMode(PullToRefreshBase.Mode.BOTH);
         }
+    }
+    private List<ProductEntity> parseProductDataJson(String categoryDataJson)
+    {
+        Gson gson=new Gson();
+        return gson.fromJson(categoryDataJson,new TypeToken<List<ProductEntity>>(){}.getType());
     }
 }

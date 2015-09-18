@@ -2,6 +2,8 @@ package com.scau.beyondboy.dianping_client.utils;
 
 import android.content.Context;
 
+import java.util.Date;
+
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
@@ -14,6 +16,7 @@ public class ShareUtils
     public static final String FILE_NAME = "dianping";
     public static final String WELCOME_ENTER_FLAG = "welcomeEnterFlag";
     public static final String CITY_NAME = "cityName";
+    public static final String REFRESH_DATE = "refresh_date";
 
     public static boolean getWelcomeEnterFlag(Context context)
     {
@@ -32,5 +35,15 @@ public class ShareUtils
     public static String getCityName(Context context)
     {
         return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(CITY_NAME, "选择城市");
+    }
+
+    public static void putRefreshData(Context context,String refreshDate)
+    {
+        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(REFRESH_DATE, refreshDate).apply();
+    }
+
+    public static String getRefreshData(Context context)
+    {
+        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(REFRESH_DATE, TimeUtils.converTime(new Date().getTime()));
     }
 }

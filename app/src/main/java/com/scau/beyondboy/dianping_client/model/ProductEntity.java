@@ -1,11 +1,14 @@
 package com.scau.beyondboy.dianping_client.model;
+
+import java.io.Serializable;
+
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
  * Date: 2015/9/9
  * Time: 11:12
  */
-public class ProductEntity
+public class ProductEntity implements Serializable
 {
     private int productId;
     private int categoryId;

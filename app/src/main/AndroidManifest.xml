@@ -31,6 +31,8 @@
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
       <activity android:name=".AllCategoryActivity"
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+      <activity android:name=".GoodsDetailActivity"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

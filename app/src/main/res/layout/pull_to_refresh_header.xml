@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  android:id="@+id/pull_to_refresh_header"
+  android:layout_width="match_parent"
+  android:layout_height="80dp"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  >
+  <TextView
+    android:id="@+id/pull_to_refresh_tip"
+    android:layout_centerHorizontal="true"
+    android:gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_8dp"
+    android:text="可以下拉更新"
+    />
+  <TextView
+    android:id="@+id/pull_to_refresh_date"
+    android:gravity="center"
+    android:layout_centerHorizontal="true"
+    android:layout_below="@id/pull_to_refresh_tip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_8dp"
+    tools:text="更新时间0分钟"
+    />
+  <ImageView
+    android:id="@+id/pull_to_refresh_arrow"
+    android:src="@drawable/arrow"
+    android:layout_centerInParent="true"
+    android:layout_toLeftOf="@id/pull_to_refresh_tip"
+    android:layout_alignTop="@id/pull_to_refresh_tip"
+    android:layout_marginRight="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    />
+  <ProgressBar
+    android:id="@+id/pull_to_refresh_progressbar"
+    android:layout_width="@dimen/width_30dp"
+    android:layout_height="@dimen/height_30dp"
+    android:layout_centerInParent="true"
+    android:layout_toLeftOf="@id/pull_to_refresh_tip"
+    android:layout_marginRight="15dp"
+    android:visibility="gone"
+    />
+</RelativeLayout>

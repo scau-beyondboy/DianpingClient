@@ -41,6 +41,16 @@ public class HttpNetWorkUtils
     }
 
     /**
+     * 带参数同步发送Get{@link #getResponseString(String)},并返回String格式的数据
+     * @param UriString 要请求资源的表示
+     * @param param get方法参数
+     */
+    public static String geResponseStringtWithparam(String UriString,String param) throws IOException
+    {
+        return getResponseString(UriString + "?" + param);
+    }
+
+    /**
      * 异步发送Get方法请求资源并在客户端处理该资源
      * @param UriString 要请求资源的表示
      * @param callback 回调接口{@link Callback}
