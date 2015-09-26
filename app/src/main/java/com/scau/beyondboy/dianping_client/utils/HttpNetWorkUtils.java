@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 /**
  * Author:beyondboy
@@ -45,7 +47,7 @@ public class HttpNetWorkUtils
      * @param UriString 要请求资源的表示
      * @param param get方法参数
      */
-    public static String geResponseStringtWithparam(String UriString,String param) throws IOException
+    public static String getResponseStringtWithparam(String UriString, String param) throws IOException
     {
         return getResponseString(UriString + "?" + param);
     }
@@ -119,4 +121,57 @@ public class HttpNetWorkUtils
         return null;
     }
 
+    /**
+     * 开启线程异步拉取数据，同步等待返回结果
+     * @param UriString 要请求资源的表示
+     * @param param get方法参数
+     * @param requestCallBack 回调接口
+     */
+    public static void synchroGetwithParam(String UriString,String param,RequestCallBack requestCallBack)
+    {
+        // 使用FutureTask来包装Callable对象
+        FutureTask<String> task = new FutureTask<String>(new AsytaskNetWork(UriString,param));
+        new Thread(task,"开启线程拉起网络").start();
+        try
+        {
+         // Log.i(TAG, "开始同步拉起网络:  "+task.get());
+            if(task.isDone())
+                requestCallBack.onSuccess(task.get());
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            requestCallBack.onFailure(e,"拉取数据失败");
+        }
+    }
+
+    /**
+     * 异步网络拉取数据返回结果
+     */
+    private static class AsytaskNetWork implements Callable<String>
+    {
+        private String uriString;
+        private String param;
+        private AsytaskNetWork(String uriString, String param)
+        {
+            this.uriString = uriString;
+            this.param = param;
+        }
+        // 实现call方法，作为线程执行体
+        public String call() throws IOException
+        {
+            String result= null;
+            result = getResponseStringtWithparam(uriString,param);
+            //Log.i(TAG,"result:  "+result);
+            return result;
+        }
+    }
+
+    /**
+     * 成功和失败拉取数据回调接口
+     */
+    public interface RequestCallBack<T>
+    {
+        void onSuccess(T result);
+        void onFailure(Exception arg0, String arg1);
+    }
 }

@@ -1,5 +1,6 @@
 package com.scau.beyondboy.dianping_client.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.scau.beyondboy.dianping_client.NearbyMapActivity;
 import com.scau.beyondboy.dianping_client.R;
 
 /**
@@ -21,6 +23,7 @@ public class FragmentSearch extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        startActivity(new Intent(getActivity(), NearbyMapActivity.class));
         return inflater.inflate(R.layout.search_index, container, false);
     }
 }

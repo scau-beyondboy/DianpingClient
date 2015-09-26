@@ -155,7 +155,7 @@ public class FragmentTuan extends Fragment
             String prouductDataJson;
             try
             {
-                prouductDataJson=HttpNetWorkUtils.geResponseStringtWithparam(Consts.HOST + Consts.PRODUCT_DATA, "page=" + page + "&size=" + size);
+                prouductDataJson=HttpNetWorkUtils.getResponseStringtWithparam(Consts.HOST + Consts.PRODUCT_DATA, "page=" + page + "&size=" + size);
                 if(!mFirstLoadData)
                 {
                     count=Integer.valueOf(HttpNetWorkUtils.getResponseString(Consts.HOST + Consts.PRODUCT_TOTAL));
@@ -195,9 +195,9 @@ public class FragmentTuan extends Fragment
                 goodsListView.setMode(PullToRefreshBase.Mode.BOTH);
         }
     }
-    private List<ProductEntity> parseProductDataJson(String categoryDataJson)
+    private List<ProductEntity> parseProductDataJson(String productDataJson)
     {
         Gson gson=new Gson();
-        return gson.fromJson(categoryDataJson,new TypeToken<List<ProductEntity>>(){}.getType());
+        return gson.fromJson(productDataJson,new TypeToken<List<ProductEntity>>(){}.getType());
     }
 }
