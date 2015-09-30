@@ -5,12 +5,29 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <application
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!--suppress DeprecatedClassUsageInspection -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <!-- 蓝牙分享所需的权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name=".WelcomeStartAct"
+      <meta-data
+        android:name="com.amap.api.v2.apikey"
+        android:value="8dc372b2131667ab4efa7d0430f1015d"/>
+
+      <activity android:name=".WelcomeStartAct"
           android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,8 +48,51 @@
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
       <activity android:name=".AllCategoryActivity"
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    <activity android:name=".MyRegisterActivity"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
       <activity android:name=".GoodsDetailActivity"
           android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-    </application>
+    <activity android:name=".NearbyMapActivity"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    <activity android:name=".MyloginActivity"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    <activity
+      android:name="com.mob.tools.MobUIShell"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      android:configChanges="keyboardHidden|orientation|screenSize"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="stateHidden|adjustResize" >
+      <intent-filter>
+        <data android:scheme="tencent1104890658" />
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+    <!-- QQ客户端回调 -->
+    <activity
+      android:name="cn.sharesdk.tencent.qq.ResultReceiver"
+      android:launchMode="singleTask"
+      android:noHistory="true">
+      <!--
+      如果集成QQ分享，或者使用QQ客户端来进行QQ空间的分享，须要在此处添加一个对ACTION_VIEW
+      事件的过滤器，其中的scheme是“tencent”前缀再开发者应用的加上appId。如果此过滤器不设置，
+      则分享结束以后不能得到正确的回调
+      -->
+      <intent-filter android:priority="1000" >
+        <data android:scheme="tencent1104890658" />
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+      </intent-filter>
+    </activity>
+    <!--微信分享回调 -->
+    <activity
+      android:name="cn.sharesdk.demo.wxapi.WXEntryActivity"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      android:configChanges="keyboardHidden|orientation|screenSize"
+      android:exported="true"
+      android:screenOrientation="portrait" />
+  </application>
 
 </manifest>

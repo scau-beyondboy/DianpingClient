@@ -1,6 +1,7 @@
 package com.scau.beyondboy.dianping_client.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.util.Date;
 
@@ -17,6 +18,7 @@ public class ShareUtils
     public static final String WELCOME_ENTER_FLAG = "welcomeEnterFlag";
     public static final String CITY_NAME = "cityName";
     public static final String REFRESH_DATE = "refresh_date";
+    public static final String USER_NAME = "userName";
 
     public static boolean getWelcomeEnterFlag(Context context)
     {
@@ -45,5 +47,18 @@ public class ShareUtils
     public static String getRefreshData(Context context)
     {
         return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(REFRESH_DATE, TimeUtils.converTime(new Date().getTime()));
+    }
+    //写入登录的名称
+    public static void putUserName(Context context,String userName)
+    {
+        SharedPreferences.Editor editor = context.getSharedPreferences(FILE_NAME, Context.MODE_APPEND).edit();
+        editor.putString(USER_NAME, userName);
+        editor.apply();
+    }
+
+    //获取登录名称
+    public static String getUserName(Context context)
+    {
+        return context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE).getString(USER_NAME, "点击登录");
     }
 }

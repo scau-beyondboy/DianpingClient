@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 /**
@@ -129,12 +131,14 @@ public class HttpNetWorkUtils
      */
     public static void synchroGetwithParam(String UriString,String param,RequestCallBack requestCallBack)
     {
+        ExecutorService executor = Executors.newCachedThreadPool();
         // 使用FutureTask来包装Callable对象
         FutureTask<String> task = new FutureTask<String>(new AsytaskNetWork(UriString,param));
-        new Thread(task,"开启线程拉起网络").start();
+        executor.submit(task);
+        executor.shutdown();
         try
         {
-         // Log.i(TAG, "开始同步拉起网络:  "+task.get());
+         Log.i(TAG, "开始同步拉起网络:  "+task.get());
             if(task.isDone())
                 requestCallBack.onSuccess(task.get());
         } catch (Exception e)
@@ -157,11 +161,12 @@ public class HttpNetWorkUtils
             this.param = param;
         }
         // 实现call方法，作为线程执行体
+        @Override
         public String call() throws IOException
         {
             String result= null;
             result = getResponseStringtWithparam(uriString,param);
-            //Log.i(TAG,"result:  "+result);
+            Log.i(TAG,"result:  "+result);
             return result;
         }
     }

@@ -32,6 +32,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Author:beyondboy
@@ -52,6 +53,9 @@ public class NearbyMapActivity extends AppCompatActivity implements LocationSour
     private double longitude=113.5455;
     private double latitude=23.5223;
     private List<ProductEntity> mProductEntityList;
+    private int mPage;
+    private int mSize;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -76,6 +80,23 @@ public class NearbyMapActivity extends AppCompatActivity implements LocationSour
         super.onResume();
         mMapView.onResume();
     }
+
+    @OnClick({ R.id.search_back, R.id.search_refresh })
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.search_back:// 返回按钮
+                finish();
+                break;
+            case R.id.search_refresh:// 刷新加载数据
+                loadData(mPage,mSize,String.valueOf(latitude), String.valueOf(longitude),String.valueOf(RADIUS));
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     protected void onPause()
     {
@@ -88,6 +109,7 @@ public class NearbyMapActivity extends AppCompatActivity implements LocationSour
         super.onDestroy();
         stopLocation();
         mMapView.onDestroy();
+        finish();
     }
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener)
@@ -131,7 +153,9 @@ public class NearbyMapActivity extends AppCompatActivity implements LocationSour
             latitude = aMapLocation.getLatitude();
             mListener.onLocationChanged(aMapLocation);//显示系统的小蓝点
             Log.i("TAG", "当前的经度和纬度是：" + longitude + "," + latitude);
-            loadData(1, 5, String.valueOf(latitude), String.valueOf(longitude), String.valueOf(RADIUS));
+            mPage = 1;
+            mSize = 5;
+            loadData(mPage, mSize, String.valueOf(latitude), String.valueOf(longitude), String.valueOf(RADIUS));
             mAMapLocManager.removeUpdates(this);
         }
     }
@@ -238,7 +262,7 @@ public class NearbyMapActivity extends AppCompatActivity implements LocationSour
     // 将数据标记到地图上
     private void addMarker(List<ProductEntity> productEntityList)
     {
-        for (ProductEntity productEntity:productEntityList)
+        for (ProductEntity productEntity : productEntityList)
         {
             //Log.i(TAG,"数据：  "+productEntity.getProductTitle());
             MarkerOptions markerOptions=new MarkerOptions();

@@ -14,4 +14,11 @@
     <string name="city_default">北京</string>
     <string name="city_location">定位城市</string>
     <string name="city_search">正在定位中&#8230;</string>
+    <!-- 注册 -->
+    <string name="register_title">注册</string>
+    <string name="register_phone_default">输入手机号</string>
+    <string name="register_check_num_default">输入验证码</string>
+    <string name="register_get_check_num">获取验证码</string>
+    <string name="register_upass_default">需组合数字、字母或符号</string>
+    <string name="register_info">我已看过并同意大众点评网《用户使用协议》</string>
 </resources>
